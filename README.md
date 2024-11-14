@@ -26,4 +26,6 @@ group := server.Group("/auth")
 group.GET("/login", func(c maruchi.Context) {
     // --
 })
+
+http.ListenAndServe("localhost:3000", server.ServeMux())
 ```
