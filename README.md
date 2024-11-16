@@ -16,7 +16,7 @@ server.Middleware(func(c maruchi.Context, next func(c maruchi.Context)) {
 })
 
 server.GET("/user/{id}", func(c maruchi.Context) {
-    c.Writer().Write([]byte("hello world"))
+    c.Write([]byte("hello world"))
 })
 
 // grouping

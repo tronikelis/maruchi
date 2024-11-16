@@ -6,25 +6,21 @@ import (
 )
 
 type Context interface {
+	http.ResponseWriter
+
 	Context() context.Context
 	SetContextVal(key any, val any)
 	ContextVal(key any) any
-
 	Req() *http.Request
-	Writer() http.ResponseWriter
 }
 
 type ContextBase struct {
-	ResponseWriter http.ResponseWriter
-	Request        *http.Request
+	http.ResponseWriter
+	Request *http.Request
 }
 
 func (c *ContextBase) Req() *http.Request {
 	return c.Request
-}
-
-func (c *ContextBase) Writer() http.ResponseWriter {
-	return c.ResponseWriter
 }
 
 func (c *ContextBase) SetContextVal(key any, val any) {

@@ -6,8 +6,8 @@ type Middleware = func(c Context, next func(c Context))
 type Handler = func(c Context)
 
 type Server struct {
-	server      *http.ServeMux
 	prefix      string
+	server      *http.ServeMux
 	middlewares []Middleware
 }
 
@@ -68,6 +68,11 @@ func (s *Server) DELETE(pattern string, handler Handler) {
 
 func (s *Server) Middleware(fn Middleware) {
 	s.middlewares = append(s.middlewares, fn)
+}
+
+// returns the prefix string for all requests
+func (s *Server) Prefix() string {
+	return s.prefix
 }
 
 // usually you will call http.ListenAndServer(addr, server.ServeMux())
