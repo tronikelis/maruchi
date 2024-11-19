@@ -41,33 +41,36 @@ func (s *Server) handleRequest(index int, handler Handler, c Context) {
 	})
 }
 
-func (s *Server) Route(method string, pattern string, handler Handler) {
+func (s *Server) Route(method string, pattern string, handler Handler) *Server {
 	s.server.HandleFunc(method+" "+s.prefix+pattern, func(w http.ResponseWriter, r *http.Request) {
 		s.handleRequest(0, handler, &ContextBase{
 			ResponseWriter: w,
 			Request:        r,
 		})
 	})
+
+	return s
 }
 
-func (s *Server) GET(pattern string, handler Handler) {
-	s.Route("GET", pattern, handler)
+func (s *Server) GET(pattern string, handler Handler) *Server {
+	return s.Route("GET", pattern, handler)
 }
 
-func (s *Server) POST(pattern string, handler Handler) {
-	s.Route("POST", pattern, handler)
+func (s *Server) POST(pattern string, handler Handler) *Server {
+	return s.Route("POST", pattern, handler)
 }
 
-func (s *Server) PUT(pattern string, handler Handler) {
-	s.Route("PUT", pattern, handler)
+func (s *Server) PUT(pattern string, handler Handler) *Server {
+	return s.Route("PUT", pattern, handler)
 }
 
-func (s *Server) DELETE(pattern string, handler Handler) {
-	s.Route("DELETE", pattern, handler)
+func (s *Server) DELETE(pattern string, handler Handler) *Server {
+	return s.Route("DELETE", pattern, handler)
 }
 
-func (s *Server) Middleware(fn Middleware) {
+func (s *Server) Middleware(fn Middleware) *Server {
 	s.middlewares = append(s.middlewares, fn)
+	return s
 }
 
 // returns the prefix string for all requests
