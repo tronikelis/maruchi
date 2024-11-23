@@ -11,8 +11,8 @@ type Server struct {
 	middlewares []Middleware
 }
 
-func NewServer() Server {
-	return Server{
+func NewServer() *Server {
+	return &Server{
 		server:      http.NewServeMux(),
 		middlewares: []Middleware{},
 	}
