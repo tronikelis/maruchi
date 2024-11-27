@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-type Context interface {
+type ReqContext interface {
 	http.ResponseWriter
 
 	Context() context.Context
@@ -14,24 +14,24 @@ type Context interface {
 	Req() *http.Request
 }
 
-type ContextBase struct {
+type ReqContextBase struct {
 	http.ResponseWriter
 	Request *http.Request
 }
 
-func (c *ContextBase) Req() *http.Request {
-	return c.Request
+func (r *ReqContextBase) Req() *http.Request {
+	return r.Request
 }
 
-func (c *ContextBase) SetContextVal(key any, val any) {
-	ctx := context.WithValue(c.Request.Context(), key, val)
-	c.Request = c.Request.WithContext(ctx)
+func (r *ReqContextBase) SetContextVal(key any, val any) {
+	ctx := context.WithValue(r.Request.Context(), key, val)
+	r.Request = r.Request.WithContext(ctx)
 }
 
-func (c *ContextBase) ContextVal(key any) any {
-	return c.Request.Context().Value(key)
+func (r *ReqContextBase) ContextVal(key any) any {
+	return r.Request.Context().Value(key)
 }
 
-func (c *ContextBase) Context() context.Context {
-	return c.Request.Context()
+func (r *ReqContextBase) Context() context.Context {
+	return r.Request.Context()
 }

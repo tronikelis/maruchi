@@ -2,8 +2,8 @@ package maruchi
 
 import "net/http"
 
-type Middleware = func(c Context, next func(c Context))
-type Handler = func(c Context)
+type Middleware = func(r ReqContext, next func(r ReqContext))
+type Handler = func(r ReqContext)
 
 type Server struct {
 	prefix      string
@@ -30,20 +30,20 @@ func (s *Server) Group(pattern string) *Server {
 	}
 }
 
-func (s *Server) handleRequest(index int, handler Handler, c Context) {
+func (s *Server) handleRequest(index int, handler Handler, r ReqContext) {
 	if index >= len(s.middlewares) {
-		handler(c)
+		handler(r)
 		return
 	}
 
-	s.middlewares[index](c, func(c Context) {
-		s.handleRequest(index+1, handler, c)
+	s.middlewares[index](r, func(r ReqContext) {
+		s.handleRequest(index+1, handler, r)
 	})
 }
 
 func (s *Server) Route(method string, pattern string, handler Handler) *Server {
 	s.server.HandleFunc(method+" "+s.prefix+pattern, func(w http.ResponseWriter, r *http.Request) {
-		s.handleRequest(0, handler, &ContextBase{
+		s.handleRequest(0, handler, &ReqContextBase{
 			ResponseWriter: w,
 			Request:        r,
 		})
