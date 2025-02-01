@@ -2,8 +2,10 @@ package maruchi
 
 import "net/http"
 
-type Middleware = func(r ReqContext, next func(r ReqContext))
-type Handler = func(r ReqContext)
+type (
+	Middleware = func(r ReqContext, next func(r ReqContext))
+	Handler    = func(r ReqContext)
+)
 
 type Server struct {
 	prefix      string
@@ -50,6 +52,20 @@ func (s *Server) Route(method string, pattern string, handler Handler) *Server {
 	})
 
 	return s
+}
+
+// connect http.Handler with maruchi,
+// this is like .ServeMux().Handle, but with middlewares
+func (s *Server) Handle(pattern string, handler http.Handler) {
+	s.server.HandleFunc(pattern, func(w http.ResponseWriter, r *http.Request) {
+		s.handleRequest(
+			0,
+			func(r ReqContext) {
+				handler.ServeHTTP(r, r.Req())
+			},
+			&ReqContextBase{ResponseWriter: w, Request: r},
+		)
+	})
 }
 
 func (s *Server) GET(pattern string, handler Handler) *Server {
