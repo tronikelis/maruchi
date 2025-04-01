@@ -12,18 +12,18 @@ type ReqContext interface {
 }
 
 type ReqContextBase struct {
-	writer  http.ResponseWriter
-	request *http.Request
-}
-
-func (self ReqContextBase) Writer() http.ResponseWriter {
-	return self.writer
+	W http.ResponseWriter
+	R *http.Request
 }
 
 func (self ReqContextBase) Req() *http.Request {
-	return self.request
+	return self.R
+}
+
+func (self ReqContextBase) Writer() http.ResponseWriter {
+	return self.W
 }
 
 func (self ReqContextBase) Context() context.Context {
-	return self.request.Context()
+	return self.R.Context()
 }
