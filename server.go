@@ -45,9 +45,9 @@ func (s *Server) handleRequest(index int, handler Handler, r ReqContext) {
 
 func (s *Server) Route(method string, pattern string, handler Handler) *Server {
 	s.server.HandleFunc(method+" "+s.prefix+pattern, func(w http.ResponseWriter, r *http.Request) {
-		s.handleRequest(0, handler, &ReqContextBase{
-			ResponseWriter: w,
-			Request:        r,
+		s.handleRequest(0, handler, ReqContextBase{
+			W: w,
+			R: r,
 		})
 	})
 
@@ -61,9 +61,9 @@ func (s *Server) Handle(pattern string, handler http.Handler) {
 		s.handleRequest(
 			0,
 			func(r ReqContext) {
-				handler.ServeHTTP(r, r.Req())
+				handler.ServeHTTP(r.Writer(), r.Req())
 			},
-			&ReqContextBase{ResponseWriter: w, Request: r},
+			ReqContextBase{W: w, R: r},
 		)
 	})
 }
